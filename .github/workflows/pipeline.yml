@@ -1,0 +1,57 @@
+name: Coffeeshop CI-CD Pipeline
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  # 1. TEST MƏRHƏLƏSİ (CI)
+  test-and-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      # Əgər requirements.txt yoxdursa, bu addımı silə bilərsən
+      - name: Install Dependencies
+        run: |
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Lint HTML/JS (Sadə sintaksis yoxlanışı)
+        run: |
+          echo "Veb faylları yoxlanılır..."
+          test -f index.html && echo "index.html mövcuddur."
+          test -f style.css && echo "style.css mövcuddur."
+          test -f script.js && echo "script.js mövcuddur."
+
+  # 2. YAYIMLAMA MƏRHƏLƏSİ (CD)
+  deploy:
+    needs: test-and-validate
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4

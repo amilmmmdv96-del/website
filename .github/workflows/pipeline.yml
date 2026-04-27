@@ -1,10 +1,10 @@
-name: Coffeeshop CI-CD Pipeline
+ame: Coffeeshop CI-CD Pipeline
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main"]  # Kod bu branch-ə birləşəndə (merge) sayt yayımlanacaq
   pull_request:
-    branches: ["main"]
+    branches: ["amil/website-pipeline"] # Bu branch-ə PR açıldıqda testlər işləyəcək
 
 permissions:
   contents: read
@@ -24,7 +24,6 @@ jobs:
         with:
           python-version: '3.11'
 
-      # Əgər requirements.txt yoxdursa, bu addımı silə bilərsən
       - name: Install Dependencies
         run: |
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
@@ -39,6 +38,7 @@ jobs:
   # 2. YAYIMLAMA MƏRHƏLƏSİ (CD)
   deploy:
     needs: test-and-validate
+    # Şərt: Yalnız 'main' branch-inə edilən push/merge zamanı işləsin
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:

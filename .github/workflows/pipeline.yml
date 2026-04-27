@@ -1,4 +1,4 @@
-ame: Coffeeshop CI-CD Pipeline
+name: Coffeeshop CI-CD Pipeline
 
 on:
   push:

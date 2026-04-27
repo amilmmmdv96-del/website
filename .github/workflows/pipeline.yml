@@ -4,7 +4,7 @@ on:
   push:
     branches: ["main"]  # Kod bu branch-ə birləşəndə (merge) sayt yayımlanacaq
   pull_request:
-    branches: ["amil/website-pipeline"] # Bu branch-ə PR açıldıqda testlər işləyəcək
+    branches: ["main"] # Bu branch-ə PR açıldıqda testlər işləyəcək
 
 permissions:
   contents: read
